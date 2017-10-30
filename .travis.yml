@@ -12,4 +12,4 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_5a5969af99db_key -iv $encrypted_5a5969af99db_iv
   -in gradle.properties.enc -out gradle.properties -d
 after_success:
-- test $TRAVIS_BRANCH = "master" && ./gradlew uploadArchives
+- test $TRAVIS_BRANCH = "dev" && ./gradlew uploadArchives
