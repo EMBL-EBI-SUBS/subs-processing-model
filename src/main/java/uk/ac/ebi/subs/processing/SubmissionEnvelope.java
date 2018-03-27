@@ -6,6 +6,7 @@ import lombok.ToString;
 import uk.ac.ebi.subs.data.Submission;
 import uk.ac.ebi.subs.data.component.SampleRef;
 import uk.ac.ebi.subs.data.submittable.*;
+import uk.ac.ebi.subs.processing.fileupload.UploadedFile;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -19,6 +20,7 @@ public class SubmissionEnvelope {
 
     private Set<SampleRef> supportingSamplesRequired = new HashSet<>();
     private List<Sample> supportingSamples = new ArrayList<>();
+    private List<UploadedFile> uploadedFiles = new ArrayList<>();
 
     private List<Analysis> analyses = new ArrayList<>();
     private List<Assay> assays = new ArrayList<>();
@@ -63,6 +65,14 @@ public class SubmissionEnvelope {
 
     public void setSupportingSamples(List<Sample> supportingSamples) {
         this.supportingSamples = supportingSamples;
+    }
+
+    public List<UploadedFile> getUploadedFiles() {
+        return uploadedFiles;
+    }
+
+    public void setUploadedFiles(List<UploadedFile> uploadedFiles) {
+        this.uploadedFiles = uploadedFiles;
     }
 
     public List<Analysis> getAnalyses() {
