@@ -18,6 +18,8 @@ public class SubmissionEnvelope {
 
     private Submission submission;
 
+    private String JWTToken;
+
     private Set<SampleRef> supportingSamplesRequired = new HashSet<>();
     private List<Sample> supportingSamples = new ArrayList<>();
     private List<UploadedFile> uploadedFiles = new ArrayList<>();
@@ -34,10 +36,7 @@ public class SubmissionEnvelope {
     private List<Study> studies = new ArrayList<>();
     private List<Protocol> protocols = new ArrayList<>();
 
-    public SubmissionEnvelope() {
-    }
-
-    ;
+    public SubmissionEnvelope() { }
 
     public SubmissionEnvelope(Submission submission) {
         this.submission = submission;
@@ -49,6 +48,14 @@ public class SubmissionEnvelope {
 
     public void setSubmission(Submission submission) {
         this.submission = submission;
+    }
+
+    public String getJWTToken() {
+        return JWTToken;
+    }
+
+    public void setJWTToken(String JWTToken) {
+        this.JWTToken = JWTToken;
     }
 
     public Set<SampleRef> getSupportingSamplesRequired() {
