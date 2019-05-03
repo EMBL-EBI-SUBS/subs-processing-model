@@ -1,44 +1,29 @@
 package uk.ac.ebi.subs.processing;
 
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-@ToString
-@EqualsAndHashCode
+@Data
 public class ProcessingCertificateEnvelope {
     String submissionId;
-    List<ProcessingCertificate> processingCertificates = new ArrayList<>();
 
-    public ProcessingCertificateEnvelope(String submissionId) {
-        this.submissionId = submissionId;
-    }
-    public ProcessingCertificateEnvelope(String submissionId, List<ProcessingCertificate> processingCertificates) {
-        this.submissionId = submissionId;
-        this.processingCertificates = processingCertificates;
-    }
+    List<ProcessingCertificate> processingCertificates = new ArrayList<>();
+    private String JWTToken;
 
     public ProcessingCertificateEnvelope() {
     }
 
-    public String getSubmissionId() {
-        return submissionId;
-    }
-
-    public void setSubmissionId(String submissionId) {
+    public ProcessingCertificateEnvelope(String submissionId) {
         this.submissionId = submissionId;
     }
 
-    public List<ProcessingCertificate> getProcessingCertificates() {
-        return processingCertificates;
-    }
-
-    public void setProcessingCertificates(List<ProcessingCertificate> processingCertificates) {
+    public ProcessingCertificateEnvelope(String submissionId, List<ProcessingCertificate> processingCertificates,
+                                         String jwtToken) {
+        this.submissionId = submissionId;
         this.processingCertificates = processingCertificates;
+        this.JWTToken = jwtToken;
     }
-
 }
