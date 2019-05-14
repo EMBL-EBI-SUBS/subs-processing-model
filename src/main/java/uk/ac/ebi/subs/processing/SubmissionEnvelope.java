@@ -24,13 +24,14 @@ public class SubmissionEnvelope {
     private List<Sample> supportingSamples = new ArrayList<>();
     private List<UploadedFile> uploadedFiles = new ArrayList<>();
 
+    private Project project;
+
     private List<Analysis> analyses = new ArrayList<>();
     private List<Assay> assays = new ArrayList<>();
     private List<AssayData> assayData = new ArrayList<>();
     private List<EgaDac> egaDacs = new ArrayList<>();
     private List<EgaDacPolicy> egaDacPolicies = new ArrayList<>();
     private List<EgaDataset> egaDatasets = new ArrayList<>();
-    private List<Project> projects = new ArrayList<>();
     private List<Sample> samples = new ArrayList<>();
     private List<SampleGroup> sampleGroups = new ArrayList<>();
     private List<Study> studies = new ArrayList<>();
@@ -82,6 +83,16 @@ public class SubmissionEnvelope {
         this.uploadedFiles = uploadedFiles;
     }
 
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+
     public List<Analysis> getAnalyses() {
         return analyses;
     }
@@ -130,14 +141,6 @@ public class SubmissionEnvelope {
         this.egaDatasets = egaDatasets;
     }
 
-    public List<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(List<Project> projects) {
-        this.projects = projects;
-    }
-
     public List<Sample> getSamples() {
         return samples;
     }
@@ -176,7 +179,8 @@ public class SubmissionEnvelope {
      * @return a list of all the lists of objects implementing Submittable within the submission.
      */
     private List<List<Submittable>> allSubmittablesLists() {
-        List lists = Arrays.asList(analyses, assays, assayData, egaDacs, egaDacPolicies, egaDatasets, projects, samples, sampleGroups, studies);
+        List lists = Arrays.asList(analyses, assays, assayData, egaDacs, egaDacPolicies, egaDatasets,
+                Collections.singletonList(project), samples, sampleGroups, studies);
         return (List<List<Submittable>>) lists;
     }
 
@@ -189,7 +193,7 @@ public class SubmissionEnvelope {
     }
 
     public Stream<Submittable> allSubmissionItemsStream() {
-        return allSubmittablesLists().stream().flatMap(l -> l.stream());
+        return allSubmittablesLists().stream().flatMap(List::stream);
     }
 
 
