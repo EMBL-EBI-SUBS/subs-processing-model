@@ -193,7 +193,7 @@ public class SubmissionEnvelope {
     }
 
     public Stream<Submittable> allSubmissionItemsStream() {
-        return allSubmittablesLists().stream().flatMap(List::stream);
+        return allSubmittablesLists().stream().flatMap(List::stream).filter(Objects::nonNull);
     }
 
 
