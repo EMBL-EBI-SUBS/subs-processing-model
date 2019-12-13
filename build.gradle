@@ -1,25 +1,22 @@
-group 'uk.ac.ebi.subs'
-version '2.13.0-SNAPSHOT'
-
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'maven'
-apply plugin: 'org.hidetake.ssh'
-
 buildscript {
     repositories {
         mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
     }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.1.RELEASE")
-        classpath 'org.hidetake:gradle-ssh-plugin:1.1.3'
-    }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group 'uk.ac.ebi.subs'
+version '2.14.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
     mavenCentral()
@@ -29,60 +26,76 @@ repositories {
 }
 
 dependencies {
-    compile("uk.ac.ebi.subs:subs-data-model:2.13.0-SNAPSHOT")
-    compileOnly("org.projectlombok:lombok:1.16.18")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    api("uk.ac.ebi.subs:subs-data-model:2.14.1-SNAPSHOT")
+
+    compileOnly("org.projectlombok:lombok:1.18.10")
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.2.1.RELEASE")
 }
 
-task sourceJar(type: Jar) { from sourceSets.main.allJava }
-
-artifacts {
-    archives jar
-    archives sourceJar { classifier "sources" }
+task jarWithAddedManifest(type: Jar) {
+    manifest {
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Built-By': System.getProperty('user.name'),
+                'Built-Date': new Date(),
+                'Source-Compatibility': project.sourceCompatibility)
+    }
+    with jar
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
+task sourceJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set("sources")
+    from sourceSets.main.allSource
+}
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-                if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-            }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'subs-processing-model'
 
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-                if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-            }
-
-            pom.project {
-                packaging 'jar'
-                url 'https://github.com/EMBL-EBI-SUBS/subs-processing-model'
-
-                scm {
-                    url 'https://github.com/EMBL-EBI-SUBS/subs-processing-model.git'
-                }
+            pom {
+                name = 'subs-processing-model'
+                description = 'Data Submission Portal - common library for processing related data model'
+                url = 'https://github.com/EMBL-EBI-SUBS/subs-processing-model'
 
                 licenses {
                     license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
-
                 developers {
                     developer {
-                        id 'subs-internal'
-                        name 'EMBL-EBI-SUBS'
-                        email 'subs-internal@ebi.ac.uk'
+                        id = 'subs-internal'
+                        name = 'EMBL-EBI-SUBS'
+                        email = 'subs-internal@ebi.ac.uk'
                     }
                 }
+                scm {
+                    connection = 'scm:git:git://github.com/EMBL-EBI-SUBS/subs-processing-model.git'
+                    developerConnection = 'scm:git:ssh://github.com/EMBL-EBI-SUBS/subs-processing-model.git'
+                    url = 'https://github.com/EMBL-EBI-SUBS/subs-processing-model'
+
+                }
+            }
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
             }
         }
     }
 }
 
-bootRepackage.enabled = false
